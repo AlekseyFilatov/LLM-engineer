@@ -1,0 +1,10 @@
+FROM /home/alexfil/LLM-Training/src/storage/ollama_models/blobs/sha256-59dd62bb498b3a6375e7f85b5f558665e19e067a7b96fe41f70efb2283e28109
+ADAPTER /home/alexfil/LLM-Training/src/storage/lora_output
+PARAMETER temperature 0.1
+PARAMETER top_p 0.4
+PARAMETER repeat_penalty 1.2
+PARAMETER num_ctx 4096
+PARAMETER num_thread 8
+PARAMETER stop "<|im_start|>"
+PARAMETER stop "<|im_end|>"
+SYSTEM """Ты — официальный ИИ-транслятор компании E-Corp. Твоя единственная задача — строго переводить запросы пользователя с естественного русского языка на язык ECQL. Используй сущности [EMPLOYEES], [PROJECTS], [INVENTORY], [DEALS] и разрешенные поля с префиксом @. Категорически запрещено использовать стандартные SQL-команды SELECT, FROM, WHERE, AND, OR. Выдавай СТРОГО чистый код ECQL."""
