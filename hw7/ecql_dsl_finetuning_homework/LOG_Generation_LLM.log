@@ -1,0 +1,79 @@
+2026-08-09 19:22:53 - [INFO] - === [GEN START] Инициализация итеративного ИИ-генератора датасетов ECQL ===
+2026-08-09 19:22:53 - [INFO] - 📡 [DETECTOR INIT] Запуск детектора дубликатов. Проверка конфигурации...
+2026-08-09 19:22:53 - [INFO] - 🧠 [DETECTOR INIT] Загрузка эмбеддингов 'sentence-transformers/all-MiniLM-L6-v2' на устройство: cpu...
+2026-08-09 19:23:02 - [INFO] - 📂 [DETECTOR INIT] Подключение к постоянной базе ChromaDB по пути: storage/chroma_db
+2026-08-09 19:23:02 - [INFO] - 🔄 [CACHE REFRESH] Сканирование базы данных и прогрев ОЗУ-кэша синтаксиса...
+2026-08-09 19:23:02 - [INFO] - 📊 [CACHE REFRESH] Успешно синхронизировано 14 уникальных хэшей кода.
+2026-08-09 19:24:40 - [ERROR] - Код: DSL_COMPILER_UNKNOWN_FIELD | Сообщение: Семантическая ошибка: Поле '@age' отсутствует в схеме сущности [EMPLOYEES]
+2026-08-09 19:24:40 - [ERROR] - Код: DSL_COMPILER_UNKNOWN_FIELD | Сообщение: Семантическая ошибка: Поле '@price' отсутствует в схеме сущности [INVENTORY]
+2026-08-09 19:24:40 - [ERROR] - Код: DSL_COMPILER_UNKNOWN_FIELD | Сообщение: Семантическая ошибка: Поле '@purchase_year' отсутствует в схеме сущности [INVENTORY]
+2026-08-09 19:24:40 - [ERROR] - Код: DSL_COMPILER_UNKNOWN_FIELD | Сообщение: Семантическая ошибка: Поле '@region' отсутствует в схеме сущности [EMPLOYEES]
+2026-08-09 19:24:40 - [ERROR] - Код: DSL_COMPILER_SQL_INJECTION | Сообщение: Крах компиляции: Обнаружен запрещённый SQL-текст 'AND': 'FETCH [PROJECTS] WHERE @start_date BETWEEN '2023-05-01' AND '2023-06-30''
+2026-08-09 19:24:40 - [ERROR] - Код: DSL_COMPILER_INVALID_ENTITY | Сообщение: Крах компиляции: Неизвестная корпоративная сущность [PARTNERS]: 'FETCH [PARTNERS] WHERE @contact_number LIKE '+7[0-9]{9}''
+2026-08-09 19:24:40 - [ERROR] - Код: DSL_COMPILER_UNKNOWN_FIELD | Сообщение: Семантическая ошибка: Поле '@position' отсутствует в схеме сущности [EMPLOYEES]
+2026-08-09 19:24:40 - [INFO] - 💾 [DB UPDATE] Пакетная транзакция успешна. На диск сохранено +2 уникальных векторов.
+2026-08-09 19:25:58 - [ERROR] - Код: DSL_COMPILER_UNKNOWN_FIELD | Сообщение: Семантическая ошибка: Поле '@department' отсутствует в схеме сущности [EMPLOYEES]
+2026-08-09 19:25:58 - [ERROR] - Код: DSL_COMPILER_UNKNOWN_FIELD | Сообщение: Семантическая ошибка: Поле '@price' отсутствует в схеме сущности [INVENTORY]
+2026-08-09 19:25:58 - [ERROR] - Код: DSL_COMPILER_UNKNOWN_FIELD | Сообщение: Семантическая ошибка: Поле '@duration' отсутствует в схеме сущности [PROJECTS]
+2026-08-09 19:25:58 - [ERROR] - Код: DSL_COMPILER_SYNTAX_ERROR | Сообщение: Синтаксическая ошибка в предикате: '@date BETWEEN 01.01'. Ожидался формат '@field OP value'
+2026-08-09 19:25:58 - [ERROR] - Код: DSL_COMPILER_SYNTAX_ERROR | Сообщение: Синтаксическая ошибка в предикате: '@experience BETWEEN 1'. Ожидался формат '@field OP value'
+2026-08-09 19:25:58 - [ERROR] - Код: DSL_COMPILER_UNKNOWN_FIELD | Сообщение: Семантическая ошибка: Поле '@price' отсутствует в схеме сущности [INVENTORY]
+2026-08-09 19:25:58 - [INFO] - 💾 [DB UPDATE] Пакетная транзакция успешна. На диск сохранено +2 уникальных векторов.
+2026-08-09 19:27:33 - [ERROR] - Код: DSL_COMPILER_SQL_INJECTION | Сообщение: Крах компиляции: Обнаружен запрещённый SQL-текст 'AND': 'FETCH [EMPLOYEES] WHERE @salary ABOVE 5000 && (@experience BETWEEN 3 AND 5)'
+2026-08-09 19:27:33 - [ERROR] - Код: DSL_COMPILER_UNKNOWN_FIELD | Сообщение: Семантическая ошибка: Поле '@department' отсутствует в схеме сущности [PROJECTS]
+2026-08-09 19:27:33 - [ERROR] - Код: DSL_COMPILER_SQL_INJECTION | Сообщение: Крах компиляции: Обнаружен запрещённый SQL-текст 'AND': 'FETCH [DEALS] WHERE @amount BETWEEN 1000 AND 5000'
+2026-08-09 19:27:33 - [ERROR] - Код: DSL_COMPILER_UNKNOWN_FIELD | Сообщение: Семантическая ошибка: Поле '@cost' отсутствует в схеме сущности [INVENTORY]
+2026-08-09 19:27:33 - [ERROR] - Код: DSL_COMPILER_UNKNOWN_FIELD | Сообщение: Семантическая ошибка: Поле '@title' отсутствует в схеме сущности [EMPLOYEES]
+2026-08-09 19:27:33 - [ERROR] - Код: DSL_COMPILER_FORBIDDEN_OPERATOR | Сообщение: Крах компиляции: Запрещённый SQL-оператор 'LIKE'. Используйте IS, NOT, ABOVE или BELOW: 'FETCH [INVENTORY] WHERE @name LIKE '%ноутбук%''
+2026-08-09 19:27:33 - [ERROR] - Код: DSL_COMPILER_UNKNOWN_FIELD | Сообщение: Семантическая ошибка: Поле '@age' отсутствует в схеме сущности [EMPLOYEES]
+2026-08-09 19:27:33 - [INFO] - 💾 [DB UPDATE] Пакетная транзакция успешна. На диск сохранено +1 уникальных векторов.
+2026-08-09 19:37:40 - [ERROR] - Код: DSL_COMPILER_TYPE_MISMATCH | Сообщение: Несоответствие типов: К числовому полю '@deadline' применено нечисловое значение 'CURRENT_DATE - INTERVAL '6 months''
+2026-08-09 19:37:40 - [ERROR] - Код: DSL_COMPILER_TYPE_MISMATCH | Сообщение: Несоответствие типов: К числовому полю '@salary' применено нечисловое значение 'AVG(@salary'
+2026-08-09 19:37:40 - [ERROR] - Код: DSL_COMPILER_SYNTAX_ERROR | Сообщение: Синтаксическая ошибка в предикате: '@stock_below_10 IS TRUE'. Ожидался формат '@field OP value'
+2026-08-09 19:37:40 - [ERROR] - Код: DSL_COMPILER_UNKNOWN_FIELD | Сообщение: Семантическая ошибка: Поле '@client_city' отсутствует в схеме сущности [DEALS]
+2026-08-09 19:37:40 - [ERROR] - Код: DSL_COMPILER_TYPE_MISMATCH | Сообщение: Несоответствие типов: К числовому полю '@deadline' применено нечисловое значение 'CURRENT_DATE + INTERVAL '3 months''
+2026-08-09 19:37:40 - [ERROR] - Код: DSL_COMPILER_UNKNOWN_FIELD | Сообщение: Семантическая ошибка: Поле '@department' отсутствует в схеме сущности [EMPLOYEES]
+2026-08-09 19:37:40 - [ERROR] - Код: DSL_COMPILER_SYNTAX_ERROR | Сообщение: Синтаксическая ошибка в предикате: '@service_life_below_5_years IS TRUE'. Ожидался формат '@field OP value'
+2026-08-09 19:37:40 - [ERROR] - Код: DSL_COMPILER_UNKNOWN_FIELD | Сообщение: Семантическая ошибка: Поле '@client_country' отсутствует в схеме сущности [DEALS]
+2026-08-09 19:37:40 - [ERROR] - Код: DSL_COMPILER_SQL_INJECTION | Сообщение: Крах компиляции: Обнаружен запрещённый SQL-текст 'AND': 'FETCH [PROJECTS] WHERE @deadline BETWEEN CURRENT_DATE + INTERVAL '3 months' AND CURRENT_DATE + INTERVAL '9 months''
+2026-08-09 19:37:40 - [ERROR] - Код: DSL_COMPILER_UNKNOWN_FIELD | Сообщение: Семантическая ошибка: Поле '@supplier' отсутствует в схеме сущности [INVENTORY]
+2026-08-09 19:39:09 - [ERROR] - Код: DSL_COMPILER_INVALID_ENTITY | Сообщение: Крах компиляции: Неизвестная корпоративная сущность [CLIENTS]: 'FETCH [CLIENTS] WHERE @name IS 'Одеса''
+2026-08-09 19:39:09 - [ERROR] - Код: DSL_COMPILER_UNKNOWN_FIELD | Сообщение: Семантическая ошибка: Поле '@title' отсутствует в схеме сущности [EMPLOYEES]
+2026-08-09 19:39:09 - [ERROR] - Код: DSL_COMPILER_UNKNOWN_FIELD | Сообщение: Семантическая ошибка: Поле '@completion_date' отсутствует в схеме сущности [PROJECTS]
+2026-08-09 19:39:09 - [ERROR] - Код: DSL_COMPILER_INVALID_ENTITY | Сообщение: Крах компиляции: Неизвестная корпоративная сущность [CLIENTS]: 'FETCH [CLIENTS] WHERE @name LIKE 'Берег%''
+2026-08-09 19:39:09 - [ERROR] - Код: DSL_COMPILER_UNKNOWN_FIELD | Сообщение: Семантическая ошибка: Поле '@title' отсутствует в схеме сущности [EMPLOYEES]
+2026-08-09 19:39:09 - [INFO] - 💾 [DB UPDATE] Пакетная транзакция успешна. На диск сохранено +2 уникальных векторов.
+2026-08-09 19:39:55 - [WARNING] - ⚠️ Процесс генерации датасета принудительно прерван пользователем.
+2026-08-09 19:42:28 - [INFO] - === [GEN START] Инициализация итеративного ИИ-генератора датасетов ECQL ===
+2026-08-09 19:42:28 - [INFO] - 📡 [DETECTOR INIT] Запуск детектора дубликатов. Проверка конфигурации...
+2026-08-09 19:42:28 - [INFO] - 🧠 [DETECTOR INIT] Загрузка эмбеддингов 'sentence-transformers/all-MiniLM-L6-v2' на устройство: cpu...
+2026-08-09 19:42:38 - [INFO] - 📂 [DETECTOR INIT] Подключение к постоянной базе ChromaDB по пути: storage/chroma_db
+2026-08-09 19:42:38 - [INFO] - 🔄 [CACHE REFRESH] Сканирование базы данных и прогрев ОЗУ-кэша синтаксиса...
+2026-08-09 19:42:38 - [INFO] - 📊 [CACHE REFRESH] Успешно синхронизировано 21 уникальных хэшей кода.
+2026-08-09 19:44:14 - [ERROR] - Код: DSL_COMPILER_INVALID_ENTITY | Сообщение: Крах компиляции: Неизвестная корпоративная сущность [STRATEGIES]: 'FETCH [STRATEGIES] WHERE @sales_revenue ABOVE 500000 AS JSON'
+2026-08-09 19:44:14 - [ERROR] - Код: DSL_COMPILER_INVALID_ENTITY | Сообщение: Крах компиляции: Неизвестная корпоративная сущность [CLIENTS]: 'FETCH [CLIENTS] WHERE @last_purchase_date NOT NULL && @experience ABOVE 30 || @experience BELOW 18'
+2026-08-09 19:44:14 - [ERROR] - Код: DSL_COMPILER_TYPE_MISMATCH | Сообщение: Несоответствие типов: К числовому полю '@salary' применено нечисловое значение 'AVG@salary ORDER BY @experience ASC'
+2026-08-09 19:44:14 - [ERROR] - Код: DSL_COMPILER_UNKNOWN_FIELD | Сообщение: Семантическая ошибка: Поле '@sales_profit' отсутствует в схеме сущности [PROJECTS]
+2026-08-09 19:44:14 - [ERROR] - Код: DSL_COMPILER_INVALID_ENTITY | Сообщение: Крах компиляции: Неизвестная корпоративная сущность [PURCHASES]: 'FETCH [PURCHASES] WHERE @total_amount ABOVE AVG@total_amount AS LIST'
+2026-08-09 19:44:14 - [ERROR] - Код: DSL_COMPILER_TYPE_MISMATCH | Сообщение: Несоответствие типов: К числовому полю '@salary' применено нечисловое значение 'AVG@salary'
+2026-08-09 19:44:14 - [ERROR] - Код: DSL_COMPILER_INVALID_ENTITY | Сообщение: Крах компиляции: Неизвестная корпоративная сущность [ORDERS]: 'FETCH [ORDERS] WHERE @amount BELOW 1000 && @order_date NOT BETWEEN CURRENT_YEAR.START_DATE AND CURRENT_YEAR.END_DATE'
+2026-08-09 19:44:14 - [ERROR] - Код: DSL_COMPILER_INVALID_ENTITY | Сообщение: Крах компиляции: Неизвестная корпоративная сущность [CLIENTS]: 'FETCH [CLIENTS] WHERE @address IS 'Улица Октябрьская' && @experience ABOVE 30'
+2026-08-09 19:44:14 - [INFO] - 💾 [DB UPDATE] Пакетная транзакция успешна. На диск сохранено +1 уникальных векторов.
+2026-08-09 19:45:45 - [ERROR] - Код: DSL_COMPILER_TYPE_MISMATCH | Сообщение: Несоответствие типов: К числовому полю '@deadline' применено нечисловое значение 'NOW - 14D'
+2026-08-09 19:45:45 - [ERROR] - Код: DSL_COMPILER_UNKNOWN_FIELD | Сообщение: Семантическая ошибка: Поле '@stock' отсутствует в схеме сущности [INVENTORY]
+2026-08-09 19:45:45 - [ERROR] - Код: DSL_COMPILER_SQL_INJECTION | Сообщение: Крах компиляции: Обнаружен запрещённый SQL-текст 'SELECT': 'FETCH [EMPLOYEES] WHERE @vacation_balance ABOVE SELECT AVG@vacation_balance FROM [EMPLOYEES]'
+2026-08-09 19:45:45 - [ERROR] - Код: DSL_COMPILER_SQL_INJECTION | Сообщение: Крах компиляции: Обнаружен запрещённый SQL-текст 'SELECT': 'FETCH [INVENTORY] WHERE @last_update AFTER SELECT MAX@update_date FROM [INVENTORY]'
+2026-08-09 19:45:45 - [ERROR] - Код: DSL_COMPILER_SQL_INJECTION | Сообщение: Крах компиляции: Обнаружен запрещённый SQL-текст 'SELECT': 'FETCH [EMPLOYEES] WHERE @salary ABOVE SELECT AVG@salary FROM [EMPLOYEES] && @city IS 'Novosibirsk''
+2026-08-09 19:45:45 - [ERROR] - Код: DSL_COMPILER_TYPE_MISMATCH | Сообщение: Несоответствие типов: К числовому полю '@deadline' применено нечисловое значение '@end_date'
+2026-08-09 19:47:10 - [ERROR] - Код: DSL_COMPILER_SYNTAX_ERROR | Сообщение: Синтаксическая ошибка в предикате: 'NOT @in_stock'. Ожидался формат '@field OP value'
+2026-08-09 19:47:10 - [ERROR] - Код: DSL_COMPILER_SYNTAX_ERROR | Сообщение: Синтаксическая ошибка в предикате: '@deadline AFTER 2020'. Ожидался формат '@field OP value'
+2026-08-09 19:47:10 - [ERROR] - Код: DSL_COMPILER_UNKNOWN_FIELD | Сообщение: Семантическая ошибка: Поле '@supplier' отсутствует в схеме сущности [INVENTORY]
+2026-08-09 19:47:10 - [INFO] - 💾 [DB UPDATE] Пакетная транзакция успешна. На диск сохранено +2 уникальных векторов.
+2026-08-09 19:48:50 - [ERROR] - Код: DSL_COMPILER_FORBIDDEN_OPERATOR | Сообщение: Крах компиляции: Запрещённый SQL-оператор '>'. Используйте IS, NOT, ABOVE или BELOW: 'FETCH [PROJECTS] WHERE @tasks COUNT > 10 && @status IS 'В работе''
+2026-08-09 19:48:50 - [ERROR] - Код: DSL_COMPILER_UNKNOWN_FIELD | Сообщение: Семантическая ошибка: Поле '@status' отсутствует в схеме сущности [INVENTORY]
+2026-08-09 19:48:50 - [ERROR] - Код: DSL_COMPILER_INVALID_ENTITY | Сообщение: Крах компиляции: Неизвестная корпоративная сущность [DEALERS]: 'FETCH [DEALERS] WHERE @rating ABOVE 4.5 && @country IS 'Россия''
+2026-08-09 19:48:50 - [ERROR] - Код: DSL_COMPILER_INVALID_ENTITY | Сообщение: Крах компиляции: Неизвестная корпоративная сущность [CUSTOMERS]: 'FETCH [CUSTOMERS] WHERE @experience ABOVE 40 && @company NOT 'Интертех''
+2026-08-09 19:48:50 - [ERROR] - Код: DSL_COMPILER_UNKNOWN_FIELD | Сообщение: Семантическая ошибка: Поле '@daysToComplete' отсутствует в схеме сущности [PROJECTS]
+2026-08-09 19:50:05 - [ERROR] - Код: DSL_COMPILER_TYPE_MISMATCH | Сообщение: Несоответствие типов: К числовому полю '@experience' применено нечисловое значение 'NULL'
+2026-08-09 19:50:05 - [ERROR] - Код: DSL_COMPILER_UNKNOWN_FIELD | Сообщение: Семантическая ошибка: Поле '@description' отсутствует в схеме сущности [INVENTORY]
+2026-08-09 19:50:06 - [INFO] - 💾 [DB UPDATE] Пакетная транзакция успешна. На диск сохранено +2 уникальных векторов.
