@@ -7,7 +7,7 @@ from huggingface_hub import snapshot_download
 from huggingface_hub.hf_api import HfFolder
 
 # Импортируем централизованный слой конфигурации проекта
-from settings import settings
+from config.settings import settings
 
 MAX_RETRIES = 3
 RETRY_DELAY = 5
