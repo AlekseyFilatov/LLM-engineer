@@ -1,0 +1,5 @@
+[2026-08-21 12:15:36] TOTAL: 14.436s | ASR: 2.834s | VLM: 9.638s | TTS: 1.964s | Query length: 29 chars
+[2026-08-21 12:19:41] TOTAL: 2.013s | ASR: 0.348s | VLM: 1.507s | TTS: 0.159s | Query length: 18 chars
+[2026-08-21 12:27:51] TOTAL: 2.886s | ASR: 0.470s | VLM: 2.414s | TTS: 0.002s | Query length: 29 chars
+[2026-08-23 13:36:51] TOTAL: 14.759s | ASR: 3.788s | VLM: 9.218s | TTS: 1.753s | Query length: 29 chars
+[2026-08-23 13:37:30] TOTAL: 1.400s | ASR: 0.391s | VLM: 0.992s | TTS: 0.017s | Query length: 29 chars
