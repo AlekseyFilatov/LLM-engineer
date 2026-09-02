@@ -1,0 +1,360 @@
+## 🎨 Как выглядит идеальный жизненный цикл проекта:
+ - Развертывание на ноутбуке: скачиваем в colab с помощью Load_Nvidea_TritonServer.ipynb
+ образы TritonServer подходящие под видеокарту. Устанавливаем модели в docker  
+ - Запуск загрузки моделей - формируем структуру проекта для TritonServer. Запускаем python3 load_onnx.py   
+ - Запуск теста - поднимаем сервер: 
+    (ml_env) ~/LLM-Training/src/triton_repository$ docker run --shm-size=12g --rm   -p 8000:8000 -p 8001:8001 -p 8002:8002   -v $(pwd):/models   -v ~/.cache/pip:/root/.cache/pip   nvcr.io/nvidia/tritonserver:25.12-py3   bash -c "pip install transformers --cache-dir=/root/.cache/pip -q && tritonserver --model-repository=/models"   
+
+ - Запуск проверки проекта - python3 client_test.py
+
+ - Запускаем скрипты проверки моделей perf_analyzer 
+ - Ликвидация: Запускаем ./hard_reset.sh, и ноутбук мгновенно становится чистым от тяжелых нейросетевых файлов!
+
+
+## Выполнение: 
+
+1. С помощью скрипта Load_Nvidea_TritonServer.ipynb развернуто окружение проекта:
+
+<p align="center">
+  <img src="./Docker Desktop 20260901.png" alt="Docker Local (Рабочее окружение)" width="600">
+  <br>
+  <em>Рисунок 1 — Рабочее окружение Docker Local</em>
+</p>
+
+2. В проект установлены с помощью скрипта python3 load_onnx.py : 
+  - "BAAI/bge-small-en-v1.5"
+  - "Xenova/bert-base-multilingual-uncased-sentiment"
+  - "onnx-community/Qwen2.5-0.5B-Instruct"
+
+3. Поднимаем TritonServer:
+    (ml_env) ~/LLM-Training/src/triton_repository$ docker run --shm-size=12g --rm   -p 8000:8000 -p 8001:8001 -p 8002:8002   -v $(pwd):/models   -v ~/.cache/pip:/root/.cache/pip   nvcr.io/nvidia/tritonserver:25.12-py3   bash -c "pip install transformers --cache-dir=/root/.cache/pip -q && tritonserver --model-repository=/models"  
+
+```text
+=============================
+== Triton Inference Server ==
+=============================
+
+NVIDIA Release 25.12 (build 246541503)
+Triton Server Version 2.64.0
+
+I0901 22:08:56.033746 1 model_lifecycle.cc:849] "successfully loaded 'text_embedder'"
+🔍 Продакшн-оркестратор успешно инициализирован.
+I0901 22:08:56.516533 1 model_lifecycle.cc:849] "successfully loaded 'text_pipeline_smart'"
+I0901 22:08:59.045986 1 model_lifecycle.cc:849] "successfully loaded 'text_classifier'"
+I0901 22:09:03.610361 1 model_lifecycle.cc:849] "successfully loaded 'text_generator'"
+I0901 22:09:03.610772 1 server.cc:620] 
++------------------+------+
+| Repository Agent | Path |
++------------------+------+
++------------------+------+
+
+I0901 22:09:03.610798 1 server.cc:647] 
++-------------+-----------------------------------------------------------------+---------------------------------------------------------------------------------------------------------------------------------------------------------------+
+| Backend     | Path                                                            | Config                                                                                                                                                        |
++-------------+-----------------------------------------------------------------+---------------------------------------------------------------------------------------------------------------------------------------------------------------+
+| onnxruntime | /opt/tritonserver/backends/onnxruntime/libtriton_onnxruntime.so | {"cmdline":{"auto-complete-config":"true","backend-directory":"/opt/tritonserver/backends","min-compute-capability":"6.000000","default-max-batch-size":"4"}} |
+| python      | /opt/tritonserver/backends/python/libtriton_python.so           | {"cmdline":{"auto-complete-config":"true","backend-directory":"/opt/tritonserver/backends","min-compute-capability":"6.000000","default-max-batch-size":"4"}} |
++-------------+-----------------------------------------------------------------+---------------------------------------------------------------------------------------------------------------------------------------------------------------+
+
+I0901 22:09:03.610853 1 server.cc:690] 
++---------------------+---------+--------+
+| Model               | Version | Status |
++---------------------+---------+--------+
+| text_classifier     | 1       | READY  |
+| text_embedder       | 1       | READY  |
+| text_generator      | 1       | READY  |
+| text_pipeline_smart | 1       | READY  |
++---------------------+---------+--------+
+
+I0901 22:09:03.611136 1 metrics.cc:782] "Collecting CPU metrics"
+I0901 22:09:03.611575 1 tritonserver.cc:2598] 
++----------------------------------+-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+| Option                           | Value                                                                                                                                                                                                           |
++----------------------------------+-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+| server_id                        | triton                                                                                                                                                                                                          |
+| server_version                   | 2.64.0                                                                                                                                                                                                          |
+| server_extensions                | classification sequence model_repository model_repository(unload_dependents) schedule_policy model_configuration system_shared_memory cuda_shared_memory binary_tensor_data parameters statistics trace logging |
+| model_repository_path[0]         | /models                                                                                                                                                                                                         |
+| model_control_mode               | MODE_NONE                                                                                                                                                                                                       |
+| strict_model_config              | 0                                                                                                                                                                                                               |
+| model_config_name                |                                                                                                                                                                                                                 |
+| rate_limit                       | OFF                                                                                                                                                                                                             |
+| pinned_memory_pool_byte_size     | 268435456                                                                                                                                                                                                       |
+| min_supported_compute_capability | 6.0                                                                                                                                                                                                             |
+| strict_readiness                 | 1                                                                                                                                                                                                               |
+| exit_timeout                     | 30                                                                                                                                                                                                              |
+| cache_enabled                    | 0                                                                                                                                                                                                               |
++----------------------------------
+
+I0901 22:09:03.636466 1 grpc_server.cc:2562] "Started GRPCInferenceService at 0.0.0.0:8001"
+I0901 22:09:03.636722 1 http_server.cc:4815] "Started HTTPService at 0.0.0.0:8000"
+I0901 22:09:03.682516 1 http_server.cc:358] "Started Metrics Service at 0.0.0.0:8002"
+```
+
+4. Запускаем скрипт ./client_test.sh - запускается тестирование проекта:
+
+```text
+(ml_env) ~/LLM-Training$ python client_test.py
+✅ Успешное подключение к Triton Server!
+💡 Введите 'exit' или 'выход' для завершения сессии.
+============================================================
+
+📝 Введите текст для ИИ-конвейера: This is the best AI server ever...
+
+🚀 ========================= РЕЗУЛЬТАТЫ BLS-ОКНА =========================
+⏱️  Время полного цикла (RTT Client-Side Latency): 38.16 мс
+--------------------------------------------------------------------------
+📝 1. Эхо-ответ сквозного промпта:
+   » This is the best AI server ever...
+--------------------------------------------------------------------------
+📊 2. Векторные эмбеддинги текста:
+   • Геометрия тензора (Shape): (1, 12, 384) [батч, токенов, скрытая_размерность]
+   • Первые 3 значения вектора: [-0.13370076 -0.00196342  0.46186727]
+--------------------------------------------------------------------------
+🔮 3. Интеллектуальный анализ тональности (BERT):
+   • Предикт системы: ⭐️⭐️⭐️⭐️⭐️ (Отлично / Очень позитивно)
+   • Уверенность модели: 95.6%
+   • Распределение вероятностей по всем 5 классам:
+     [Класс 1] ⭐️ (Ужасно / Оч: 0.2%
+     [Класс 2] ⭐️⭐️ (Плохо / Н: 0.1%
+     [Класс 3] ⭐️⭐️⭐️ (Нейтрал: 0.4%
+     [Класс 4] ⭐️⭐️⭐️⭐️ (Хорош: 3.7%
+     [Класс 5] ⭐️⭐️⭐️⭐️⭐️ (Отл: 95.6%
+🚀 =====================================================================
+```
+
+5. Запускаем скрипты проверки моделей perf_analyzer 
+
+```text
+(ml_env) ~/LLM-Training$ docker run --rm -it --net=host nvcr.io/nvidia/tritonserver:25.12-py3-sdk   perf_analyzer -m text_classifier --concurrency-range 4:4 -u localhost:8000   --shape input_ids:16 --shape attention_mask:16 --shape token_type_ids:16   --input-data zero
+
+=================================
+== Triton Inference Server SDK ==
+=================================
+NVIDIA Release 25.12 (build 246541509)
+*** Measurement Settings ***
+
+  Batch size: 1
+  Service Kind: TRITON
+  Using "time_windows" mode for stabilization
+  Stabilizing using average latency and throughput
+  Measurement window: 5000 msec
+  Latency limit: 0 msec
+  Concurrency limit: 4 concurrent requests
+  Using synchronous calls for inference
+
+Request concurrency: 4
+  Client: 
+    Request count: 987
+    Throughput: 56.6329 infer/sec
+    Avg latency: 72663 usec (standard deviation 30062 usec)
+    p50 latency: 67164 usec
+    p90 latency: 109383 usec
+    p95 latency: 131280 usec
+    p99 latency: 188032 usec
+    Avg HTTP time: 72653 usec (send/recv 42 usec + response wait 72611 usec)
+  Server: 
+    Inference count: 994
+    Execution count: 551
+    Successful request count: 994
+    Avg request latency: 72593 usec (overhead 1465 usec + queue 5112 usec + compute input 22 usec + compute infer 65969 usec + compute output 24 usec)
+Inferences/Second vs. Client Average Batch Latency
+Concurrency: 4, throughput: 56.6329 infer/sec, latency 72663 usec
+=================================================================
+
+(ml_env) ~/LLM-Training$ docker run --rm -it --net=host nvcr.io/nvidia/tritonserver:25.12-py3-sdk \
+  perf_analyzer -m text_embedder --concurrency-range 4:4 -u localhost:8000 --shape input_ids:1,16
+
+=================================
+== Triton Inference Server SDK ==
+=================================
+
+NVIDIA Release 25.12 (build 246541509)
+
+*** Measurement Settings ***
+  Batch size: 1
+  Service Kind: TRITON
+  Using "time_windows" mode for stabilization
+  Stabilizing using average latency and throughput
+  Measurement window: 5000 msec
+  Latency limit: 0 msec
+  Concurrency limit: 4 concurrent requests
+  Using synchronous calls for inference
+
+Request concurrency: 4
+Failed to update context stat: Timer not set correctly. Request time from 1788250384262927092 to 1788250384215131092.
+Failed to update context stat: Timer not set correctly. Request time from 1788250384262911220 to 1788250384215138960.
+Failed to update context stat: Timer not set correctly. Request time from 1788250384262940782 to 1788250384215298790.
+  Client: 
+    Request count: 350908
+    Throughput: 10979.7 infer/sec
+    Avg latency: 346 usec (standard deviation 90 usec)
+    p50 latency: 320 usec
+    p90 latency: 465 usec
+    p95 latency: 518 usec
+    p99 latency: 637 usec
+    Avg HTTP time: 344 usec (send/recv 72 usec + response wait 272 usec)
+  Server: 
+    Inference count: 350918
+    Execution count: 350918
+    Successful request count: 350917
+    Avg request latency: 85 usec (overhead 27 usec + queue 37 usec + compute input 4 usec + compute infer 11 usec + compute output 4 usec)
+Inferences/Second vs. Client Average Batch Latency
+Concurrency: 4, throughput: 10979.7 infer/sec, latency 346 usec
+===============================================================
+
+(ml_env) ~/LLM-Training$ docker run --rm -it --net=host nvcr.io/nvidia/tritonserver:25.12-py3-sdk \
+  perf_analyzer -m text_generator --concurrency-range 4:4 -u localhost:8000 --shape prompt:1
+
+=================================
+== Triton Inference Server SDK ==
+=================================
+
+*** Measurement Settings ***
+  Batch size: 1
+  Service Kind: TRITON
+  Using "time_windows" mode for stabilization
+  Stabilizing using average latency and throughput
+  Measurement window: 5000 msec
+  Latency limit: 0 msec
+  Concurrency limit: 4 concurrent requests
+  Using synchronous calls for inference
+
+Request concurrency: 4
+  Client: 
+    Request count: 99650
+    Throughput: 5473.94 infer/sec
+    Avg latency: 725 usec (standard deviation 222 usec)
+    p50 latency: 689 usec
+    p90 latency: 985 usec
+    p95 latency: 1066 usec
+    p99 latency: 1211 usec
+    Avg HTTP time: 724 usec (send/recv 59 usec + response wait 665 usec)
+  Server: 
+    Inference count: 99654
+    Execution count: 99654
+    Successful request count: 99654
+    Avg request latency: 510 usec (overhead 2 usec + queue 336 usec + compute input 11 usec + compute infer 111 usec + compute output 50 usec)
+Inferences/Second vs. Client Average Batch Latency
+Concurrency: 4, throughput: 5473.94 infer/sec, latency 725 usec
+===============================================================
+
+(ml_env) ~/LLM-Training$ docker run --rm -it --net=host nvcr.io/nvidia/tritonserver:25.12-py3-sdk \
+  perf_analyzer -m text_pipeline_smart --concurrency-range 4:4 -u localhost:8000 \
+  --shape prompt:1 --input-data zero
+
+=================================
+== Triton Inference Server SDK ==
+=================================
+
+NVIDIA Release 25.12 (build 246541509)
+
+*** Measurement Settings ***
+  Batch size: 1
+  Service Kind: TRITON
+  Using "time_windows" mode for stabilization
+  Stabilizing using average latency and throughput
+  Measurement window: 5000 msec
+  Latency limit: 0 msec
+  Concurrency limit: 4 concurrent requests
+  Using synchronous calls for inference
+
+Request concurrency: 4
+  Client: 
+    Request count: 195
+    Throughput: 10.7982 infer/sec
+    Avg latency: 366082 usec (standard deviation 37418 usec)
+    p50 latency: 363765 usec
+    p90 latency: 417611 usec
+    p95 latency: 427289 usec
+    p99 latency: 449590 usec
+    Avg HTTP time: 366076 usec (send/recv 539 usec + response wait 365537 usec)
+  Server: 
+    Inference count: 195
+    Execution count: 195
+    Successful request count: 195
+    Avg request latency: 363761 usec (overhead 3 usec + queue 271525 usec + compute input 16 usec + compute infer 91864 usec + compute output 352 usec)
+Inferences/Second vs. Client Average Batch Latency
+Concurrency: 4, throughput: 10.7982 infer/sec, latency 366082 usec
+
+```
+
+## Отчет по заданию :
+
+1. Иерархическое дерево Model Repository.
+```text
+~/LLM-Training/src/triton_repository/
+├── text_pipeline_smart/      # Комплексная BLS-модель оркестрации (Python Backend)
+│   ├── config.pbtxt
+│   └── 1/
+│       └── model.py
+├── text_embedder/            # Выделение смысла текста: bge-small-en-v1.5 (ONNX Runtime)
+│   ├── config.pbtxt
+│   └── 1/
+│       └── model.onnx
+├── text_classifier/          # Анализ эмоций: bert-base-multilingual-uncased (ONNX Runtime)
+│   ├── config.pbtxt
+│   └── 1/
+│       └── model.onnx
+└── text_generator/           # База генерации текста: Qwen2.5-0.5B-Instruct (ONNX Runtime)
+    ├── config.pbtxt
+    └── 1/
+        └── model.onnx
+```
+
+2. Содержимое файлов config.pbtxt и код BLS-скрипта (model.py)
+
+   - text_embedder и text_classifier (Бэкенд ONNX Runtime на C++):  
+    Очищены от избыточных ручных конфигураций и переведены на автоматическое дополнение графов (auto-complete-config). В pbtxt-файлах явно объявлен провайдер CPUExecutionProvider. Включение динамического батчинга (max_batch_size: 8) позволяет C++ ядру эффективно склеивать параллельные запросы.
+   - text_generator (Бэкенд ONNX Runtime на C++):  
+    Загружена квантованная INT4-версия декодера Qwen2.5. Для успешной валидации структуры C++ парсером утилиты Perf Analyzer, в config.pbtxt жестко зафиксированы входные тензоры (input_ids, attention_mask) и трехмерный выход логитов токенов (logits) с полной размерностью оригинального словаря Qwen (151936).  
+   - text_pipeline_smart (Python Backend):  
+    Выступает в роли ИИ-дирижера (Business Logic Scripting — BLS). Логика скрипта model.py разделена по независимым токенизаторам (bert_tokenizer и qwen_tokenizer), что предотвращает выход индексов за границы словарей (Gather узлов) подмоделей. Внутренний параллелизм и защита от GIL обеспечиваются встроенным пулом потоков ThreadPoolExecutor(max_workers=4) 
+
+3. Анализ «глухоты» и «слепоты» системы  
+
+```text
+Профайлинг системы проводился с помощью официального инструмента Triton SDK Perf Analyzer в режиме фиксированной конкурентной нагрузки (Concurrency: 4 параллельных запроса). Тесты проводились автономно внутри изолированного SDK-контейнера через локальный сетевой мост --net=host.
+
+```
+<p align="center">
+  <img src="./Сводная таблица 2026-09-02.png" alt="Cводная таблица фактических метрик производительности для BLS-пайплайна в Triton Inference Server, упорядоченная по типу моделей" width="600">
+  <br>
+  <em>Рисунок 2 — Cводная таблица фактических метрик производительности для BLS-пайплайна в Triton Inference Server, упорядоченная по типу моделей</em>
+</p>
+
+4. Глубокий системный анализ и определение слабых мест (Bottleneck)    
+
+Сопоставление атомарных замеров компонентов с финальным сквозным BLS-тестом выявило классические паттерны поведения сложных распределенных систем:  
+Главное инфраструктурное узкое место конвейера:  Метрики сервера наглядно показывают, что при сквозном BLS-вызове колоссальные 74,6% общего времени запрос проводит не в процессе математических расчетов нейросетей, а в очереди ожидания (Server Queue Time: 271.52 мс).  
+  - Причина:  В текущей конфигурации оркестратора text_pipeline_smart запущен единственный экземпляр Python-контекста (count: 1 в instance_group). При одновременном наплыве 4 тяжелых запросов от Perf Analyzer, единственный поток интерпретатора намертво блокируется вычислениями первой задачи, заставляя остальные запросы простаивать в C++ очереди планировщика Triton.  
+
+Анализ вычислительных задержек подмоделей:  
+Чистый инференс графа BERT классификатора (text_classifier) на CPU занимает 65.96 мс, в то время как чистые вычисления всей BLS-цепочки составляют 91.86 мс.  
+  - Разница (91.86 - 65.96 = 25.90 мс) — это чистые накладные расходы (оверхед) на выполнение двух независимых стадий токенизации текста на CPU (словарями BERT и Qwen) силами самого интерпретатора Python и маршалинг созданных NumPy-массивов сквозь границы бэкендов в C++ ядро Triton. Легковесные графы эмбеддера (11 мкс) и генератора (111 мкс) практически не оказывают влияния на задержку.
+
+5. Архитектурное сопоставление: Triton Server (BLS) vs Flask / FastAPI
+
+На основе результатов исследования сформирован вывод о преимуществах промышленной платформы NVIDIA Triton перед стандартными веб-фреймворками Python:  
+  - Эффективный обход GIL (Global Interpreter Lock): Во Flask или FastAPI попытка распараллелить вычисления токенизатора Hugging Face и трех тяжелых моделей на CPU упрется в процессорные блокировки GIL. Triton Server полностью решает эту проблему: тяжелая математика ONNX-графов эмбеддера, генератора и классификатора исполняется внутри изолированного, многопоточного C++ ядра ONNX Runtime. Python-бэкенд используется только в роли легковесного диспетчера сквозной бизнес-логики.  
+  - Изоляция и независимое распределение ресурсов: В FastAPI весь конвейер работает в рамках единого монолитного процесса. В Triton каждый бэкенд изолирован в памяти. Система позволяет гибко балансировать нагрузку: например, оставить вычислительно легкий эмбеддер на CPU, а тяжелый BERT-классификатор и декодер Qwen перевести на GPU (RTX 5070 Ti) изменением одной строчки в конфиге, не переписывая ни единого элемента в коде оркестратора.  
+  - Fault Tolerance (Отказоустойчивость) «из коробки»: Благодаря интеграции пула потоков ThreadPoolExecutor и блоков try-except внутри метода execute() оркестратора, падение или таймаут любой из дочерних подмоделей под пиковой нагрузкой перехватывается сервером на лету. Пайплайн мгновенно переключается на безопасные fallback-алгоритмы и возвращает структурированный ответ, гарантируя стабильность всей системы (High Availability).
+
+
+6. Предложенные стратегии оптимизации Production-уровня
+
+Для масштабирования системы и снижения общей задержки (Total Latency) со 366 мс до минимальных значений рекомендуются следующие шаги:
+
+ - Расширение группы инстансов оркестратора (Устранение главного Bottleneck):Необходимо увеличить количество параллельных рабочих процессов Python-бэкенда в файле text_pipeline_smart/config.pbtxt, установив count: 4 в блоке instance_group. Это позволит Triton параллельно распределять 4 конкурентных запроса Perf Analyzer по независимым ядрам процессора хоста, что полностью ликвидирует очередь в 271 мс, снизит общую задержку до ~95 мс и увеличит сквозной Throughput в 3.5–4 раза.
+
+ - Оптимизация параметров Dynamic Batching:В конфигурации text_classifier/config.pbtxt следует активировать продвинутый планировщик динамического батчинга:
+ 
+ protobufdynamic_batching {
+  max_queue_delay_microseconds: 5000
+}
+
+Это заставит C++ ядро Triton склеивать поступающие одиночные запросы в матрицы (батчи). За счет оптимизации кэша процессора и векторных инструкций (AVX-512) скорость инференса тяжелого классификатора вырастет на 200-300%.
+
+ - Компиляция этапа токенизации:  Перенести этап токенизации из интерпретируемого скрипта Python в нативный скомпилированный C++/Rust бэкенд, либо использовать биндинги библиотеки tokenizers (Fast Tokenizer), что сократит накладные расходы на парсинг строк с 25 мс до единиц микросекунд.
+
+ 

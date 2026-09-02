@@ -1,0 +1,38 @@
+name: "text_pipeline_smart"
+backend: "python"
+max_batch_size: 0
+
+# ЯВНО ОБЪЯВЛЯЕМ ВХОД, который отправляет клиент
+input [
+  {
+    name: "prompt"
+    data_type: TYPE_STRING
+    dims: [ -1 ]
+  }
+]
+
+# ЯВНО ОБЪЯВЛЯЕМ ВЫХОДЫ, которые создает наш model.py
+output [
+  {
+    name: "generated_text"
+    data_type: TYPE_STRING
+    dims: [ -1 ]
+  },
+  {
+    name: "embeddings"
+    data_type: TYPE_FP32
+    dims: [ -1, 384 ]
+  },
+  {
+    name: "logits"
+    data_type: TYPE_FP32
+    dims: [ -1, 6 ]
+  }
+]
+
+instance_group [
+  {
+    count: 1
+    kind: KIND_CPU
+  }
+]
