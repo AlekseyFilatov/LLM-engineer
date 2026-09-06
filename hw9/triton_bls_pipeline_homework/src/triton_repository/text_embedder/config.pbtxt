@@ -1,0 +1,8 @@
+name: "text_embedder"
+backend: "onnxruntime"
+max_batch_size: 8
+
+parameters {
+  key: "execution_providers"
+  value: { string_value: "CPUExecutionProvider" }
+}
