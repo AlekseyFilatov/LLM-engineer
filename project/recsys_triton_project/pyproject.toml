@@ -1,0 +1,82 @@
+[project]
+name = "omni_search_rag_agent"
+version = "0.5.0"
+description = "SOTA Two-Stage RecSys & Multimodal RAG Search Agent for E-Corp"
+requires-python = ">=3.12,<3.13"
+dependencies = [
+    # API, Web UI & Configuration Layer
+    "gradio>=4.0.0",
+    "pydantic>=2.0.0",
+    "pydantic-settings>=2.0.0",
+    "python-dotenv>=1.0.0",
+    "pyyaml>=6.0.0",
+
+    # Нативный Лингвистический и NLP Контур (CPU)
+    "spacy>=3.7.0",
+    "scikit-learn>=1.3.0",
+    "numpy>=1.24.0,<2.0.0",        # Строгое ограничение из setup_env.sh
+    "pymorphy3>=2.0.0",
+    "scipy>=1.10.0",
+    "tqdm>=4.65.0",
+
+    # Инфраструктурные gRPC и HTTP Клиенты
+    "tritonclient[all]>=2.54.0",    # Флаг [all] и версия строго по скрипту
+    "qdrant-client>=1.9.0",         # Версия строго по скрипту
+    "requests>=2.31.0",
+    
+    # Локальная векторизация и Mean Pooling (Оффлайн-индексатор)
+    # ВНИМАНИЕ: Ссылка на sentence-transformers вырезана для исключения конфликтов
+    "torch>=2.0.0",
+    "transformers>=4.36.0,<4.58.0", # Жесткие рамки совместимости графов
+    "huggingface-hub>=0.24.0,<1.0.0",
+    "pillow>=10.0.0",
+
+    # Прикладной Мониторинг & Агентские Графы
+    "langfuse>=2.0.0",
+    "langgraph>=0.1.0",
+    "prometheus-client>=0.20.0",
+]
+
+[tool.uv]
+managed = true
+package = false
+# Использование стратегии unsafe-best-match для бесконфликтной сборки
+index-strategy = "unsafe-best-match"
+
+[tool.uv.sources]
+torch = { index = "pytorch-cpu" }
+
+[[tool.uv.index]]
+name = "pytorch-cpu"
+url = "https://download.pytorch.org/whl/cpu"
+explicit = false
+
+# =====================================================================
+# НАСТРОЙКИ СТАТИЧЕСКОГО АНАЛИЗА И КАЧЕСТВА КОДА (STRICT MLOPS)
+# =====================================================================
+[tool.mypy]
+python_version = "3.12"
+ignore_missing_imports = true
+strict = true
+exclude = ['venv', '.venv', 'build', 'dist', 'src/storage']
+
+[tool.ruff]
+line-length = 120
+fix = true
+
+[tool.ruff.lint]
+select = ["E", "F", "B", "I", "N", "UP", "PL", "RUF"]
+ignore = [
+    "T201", "BLE001", "F821", "INP001", "A001", "PLW2901", "E501",
+    "D1", "ANN", "COM812", "ISC001", "RUF001"
+]
+
+[tool.ruff.lint.isort]
+lines-after-imports = 2
+no-lines-before = ["standard-library", "local-folder"]
+
+[tool.ruff.format]
+docstring-code-format = true
+
+[tool.ruff.lint.extend-per-file-ignores]
+"tests/*.py" = ["S101", "S311"]

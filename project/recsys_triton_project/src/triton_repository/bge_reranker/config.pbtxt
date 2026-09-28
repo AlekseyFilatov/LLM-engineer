@@ -1,0 +1,17 @@
+name: "bge_reranker"
+backend: "onnxruntime"
+max_batch_size: 0
+
+# Включаем автоматическое определение геометрии графа C++ движком Тритона
+# Сервер сам поймет, сколько входов у модели (2 или 3) и как они называются!
+parameters {
+  key: "execution_providers"
+  value: { string_value: "CUDAExecutionProvider" }
+}
+
+instance_group [
+  {
+    count: 1
+    kind: KIND_GPU
+  }
+]
