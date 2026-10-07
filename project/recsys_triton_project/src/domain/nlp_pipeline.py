@@ -59,7 +59,7 @@ class FlowSpacyLemmatizer(BaseEstimator, TransformerMixin):
     """Шаг 2: Высокоскоростная параллельная лемматизация через нейросетевой spaCy pipeline"""
     def __init__(self, batch_size: int = 256):
         self.batch_size = batch_size
-        self.nlp = spacy.load("ru_core_news_sm")
+        self.nlp = spacy.load("ru_core_news_md")
 
     def fit(self, X, y=None):
         self.is_fitted_ = True

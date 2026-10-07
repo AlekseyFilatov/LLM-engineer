@@ -7,9 +7,37 @@ from qdrant_client.models import Distance, VectorParams, PointStruct
 import tritonclient.grpc as grpcclient
 from transformers import AutoTokenizer
 
+import os
+from qdrant_client import QdrantClient
+import tritonclient.grpc as triton_grpc
+
+# =====================================================================
+# ДИНАМИЧЕСКИЙ MLOPS-КОНТУР ПОДКЛЮЧЕНИЯ (Устранение захардкоженных 127.0.0.1)
+# =====================================================================
+# Если переменная QDRANT_HOST задана в докере (qdrant-db), берем её. 
+# Если нет (запуск на хосте) — откатываемся на localhost.
+QDRANT_HOST = os.getenv("QDRANT_HOST", "127.0.0.1")
+QDRANT_PORT = int(os.getenv("QDRANT_PORT", "6334"))
+
+# Аналогично для NVIDIA Triton Server
+TRITON_URL = os.getenv("TRITON_GRPC_URL", "127.0.0.1:8001")
+
+# Убираем префикс протокола, если он случайно пролез из переменных окружения
+if "://" in TRITON_URL:
+    TRITON_URL = TRITON_URL.split("://")[-1]
+
+print(f"📡 [INDEXER] Коннект к векторной СУБД Qdrant: {QDRANT_HOST}:{QDRANT_PORT}")
+print(f"📡 [INDEXER] Коннект к NVIDIA Triton Server: {TRITON_URL}")
+
+# Инициализируем клиенты по динамическим адресам сети
+qdrant_client = QdrantClient(host=QDRANT_HOST, grpc_port=QDRANT_PORT, prefer_grpc=True)
+triton_client = triton_grpc.InferenceServerClient(url=TRITON_URL)
+
+COLLECTION_NAME = os.getenv("QDRANT_COLLECTION", "catalog")
+
 # 1. Подключаемся к локальной инфраструктуре по gRPC
-qdrant_client = QdrantClient(host="localhost", port=6334, prefer_grpc=True)
-triton_client = grpcclient.InferenceServerClient(url="127.0.0.1:8001", verbose=False)
+#qdrant_client = QdrantClient(host="localhost", port=6334, prefer_grpc=True)
+#triton_client = grpcclient.InferenceServerClient(url="127.0.0.1:8001", verbose=False)
 
 # 2. Загружаем локальный токенизатор хоста строго из конфига (нужен для подготовки длин фраз)
 TOKENIZER_DIR = Path(__file__).parent / "src" / "paraphrase_tokenizer"

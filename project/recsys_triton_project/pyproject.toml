@@ -4,12 +4,19 @@ version = "0.5.0"
 description = "SOTA Two-Stage RecSys & Multimodal RAG Search Agent for E-Corp"
 requires-python = ">=3.12,<3.13"
 dependencies = [
-    # API, Web UI & Configuration Layer
-    "gradio>=4.0.0",
-    "pydantic>=2.0.0",
-    "pydantic-settings>=2.0.0",
+     # ИСПРАВЛЕНО: Принудительный жесткий пиннинг стабильной LTS-версии
+    "gradio>=5.0.0,<6.0.0", 
+    "pydantic>=2.7.0,<3.0.0",
+    "pydantic-settings>=2.2.0,<3.0.0",
+    "datasets>=2.18.0",             # ДОБАВЛЕНО (требуется для датасетов Ragas)
+    "langchain-core>=0.3.0",
+    "langchain-community>=0.3.0",
+    "langchain-google-vertexai>=2.0.0",
+    # Фиксируем стабильный, переписанный релиз ragas
+    "ragas==0.2.3",
     "python-dotenv>=1.0.0",
     "pyyaml>=6.0.0",
+    "nltk>=3.8.0",
 
     # Нативный Лингвистический и NLP Контур (CPU)
     "spacy>=3.7.0",
@@ -20,12 +27,11 @@ dependencies = [
     "tqdm>=4.65.0",
 
     # Инфраструктурные gRPC и HTTP Клиенты
-    "tritonclient[all]>=2.54.0",    # Флаг [all] и версия строго по скрипту
-    "qdrant-client>=1.9.0",         # Версия строго по скрипту
+    "tritonclient[all]>=2.54.0",    
+    "qdrant-client>=1.9.0",         
     "requests>=2.31.0",
     
-    # Локальная векторизация и Mean Pooling (Оффлайн-индексатор)
-    # ВНИМАНИЕ: Ссылка на sentence-transformers вырезана для исключения конфликтов
+    # ИСПРАВЛЕНО: Принудительная фиксация CPU-архитектуры PyTorch без затягивания NVIDIA CUDA слоев
     "torch>=2.0.0",
     "transformers>=4.36.0,<4.58.0", # Жесткие рамки совместимости графов
     "huggingface-hub>=0.24.0,<1.0.0",
@@ -37,19 +43,21 @@ dependencies = [
     "prometheus-client>=0.20.0",
 ]
 
+
 [tool.uv]
 managed = true
 package = false
-# Использование стратегии unsafe-best-match для бесконфликтной сборки
 index-strategy = "unsafe-best-match"
-
-[tool.uv.sources]
-torch = { index = "pytorch-cpu" }
 
 [[tool.uv.index]]
 name = "pytorch-cpu"
 url = "https://download.pytorch.org/whl/cpu"
-explicit = false
+explicit = true
+
+[tool.uv.sources]
+torch = { index = "pytorch-cpu" }
+torchvision = { index = "pytorch-cpu" }
+torchaudio = { index = "pytorch-cpu" }
 
 # =====================================================================
 # НАСТРОЙКИ СТАТИЧЕСКОГО АНАЛИЗА И КАЧЕСТВА КОДА (STRICT MLOPS)

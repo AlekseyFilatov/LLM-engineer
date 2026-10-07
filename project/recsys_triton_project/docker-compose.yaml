@@ -150,13 +150,23 @@ services:
       - "7860:7860"
     env_file:
       - .env
-    # Монтируем папку картинок, чтобы Gradio мог мгновенно подгружать их с SSD ноутбука
     volumes:
-      - ./data/catalog_images:/home/alexfil/LLM-Training/data/catalog_images
+      # Монтируем картинки напрямую в рабочую директорию /app рантайма докера!
+      - ./data/catalog_images:/app/data/catalog_images
     environment:
-      - TRITON_GRPC_URL=triton-server:8001       # Динамический С++ DNS докера!
-      - QDRANT_HOST=qdrant-db                    # Динамический gRPC DNS докера!
-      - WHISPER_URL=http://whisper-asr:8000      # Динамический HTTP DNS докера!
+      - TRITON_GRPC_URL=triton-server:8001
+      - QDRANT_HOST=qdrant-db
+      - WHISPER_URL=http://whisper-asr:8000
+    
+    # Даем контейнеру прямой доступ к CUDA-драйверам хоста!
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              count: all
+              capabilities: [gpu, utility, compute]
+              
     depends_on:
       - triton-server
       - qdrant-db
