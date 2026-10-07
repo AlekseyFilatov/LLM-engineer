@@ -1,0 +1,6 @@
+apiVersion: v2
+name: omni-search-rag-agent
+description: Cloud-Native Helm Chart для двухэтапной рекомендательной ИИ-системы E-Corp
+type: application
+version: 0.5.0
+appVersion: "2026.09"
