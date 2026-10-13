@@ -2,7 +2,8 @@ FROM docker.io/library/ubuntu:24.04
 
 ENV PYTHONUNBUFFERED=1 \
     UV_SYSTEM_PYTHON=1 \
-    GRADIO_SERVER_NAME="0.0.0.0"
+    GRADIO_SERVER_NAME="0.0.0.0" \
+    DEBIAN_FRONTEND=noninteractive
 
 WORKDIR /app
 
@@ -12,6 +13,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     python3.12 \
     python3-pip \
     libgomp1 \
+    ffmpeg \
     ca-certificates \
     && rm -rf /var/lib/apt/lists/*
 

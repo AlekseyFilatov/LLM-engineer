@@ -103,3 +103,8 @@ user_registry:
     preferred_category: null
     spending_segment: "unknown"
     is_new: true
+
+recsys_weights:
+  alpha_search: 0.3       # СНИЖАЕМ с 0.6-0.7 до 0.3 (уменьшаем влияние сырого текста)
+  beta_als: 0.2           # Вес персональных рекомендаций
+  gamma_segment: 0.5      # ПОВЫШАЕМ до 0.5 (приоритет соответствия категории и сезона!)
