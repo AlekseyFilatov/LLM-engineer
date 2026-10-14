@@ -1,0 +1,24 @@
+# Глобальные параметры образов
+image:
+  agentUi: "cr.yandex/alexfil/omni-agent-ui:latest"
+  tritonServer: "nvcr.io/nvidia/tritonserver:24.01-py3"
+  qdrantDb: "qdrant/qdrant:latest"
+
+# Вычислительные лимиты для Тритона (Выделение CUDA-ядер в облаке)
+triton:
+  shmSize: "12Gi"
+  resources:
+    limits:
+      ://nvidia.com: "1" # Выделяем 1 физическую облачную GPU
+      memory: "16Gi"
+    requests:
+      ://nvidia.com: "1"
+      memory: "8Gi"
+
+# Конфигурации подключения по внутренней сети K8s (ClusterIP DNS)
+env:
+  tritonGrpcUrl: "triton-service:8001"
+  qdrantHost: "qdrant-service"
+  whisperUrl: "http://whisper-service:8000"
+  localTokenizerPath: "/app/src/paraphrase_tokenizer"
+  localRerankerTokenizerPath: "/app/src/reranker_tokenizer"

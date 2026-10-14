@@ -1,0 +1,44 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: agent-ui-deployment
+  labels:
+    app: omni-agent-ui
+spec:
+  replicas: 3 # Облако автоматически поднимет 3 копии вашего Gradio UI для балансировки трафика!
+  selector:
+    matchLabels:
+      app: omni-agent-ui
+  template:
+    metadata:
+      labels:
+        app: omni-agent-ui
+    spec:
+      containers:
+        - name: omni-agent-ui
+          image: "{{ .Values.image.agentUi }}"
+          ports:
+            - containerPort: 7860
+          env:
+            - name: TRITON_GRPC_URL
+              value: "{{ .Values.env.tritonGrpcUrl }}"
+            - name: QDRANT_HOST
+              value: "{{ .Values.env.qdrantHost }}"
+            - name: WHISPER_URL
+              value: "{{ .Values.env.whisperUrl }}"
+            - name: LOCAL_TOKENIZER_PATH
+              value: "{{ .Values.env.localTokenizerPath }}"
+            - name: LOCAL_RERANKER_TOKENIZER_PATH
+              value: "{{ .Values.env.localRerankerTokenizerPath }}"
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: agent-ui-service
+spec:
+  ports:
+    - port: 7860
+      targetPort: 7860
+  selector:
+    app: omni-agent-ui
+  type: LoadBalancer # Выделяет внешний защищенный IPv4-адрес балансировщика для пользователей!

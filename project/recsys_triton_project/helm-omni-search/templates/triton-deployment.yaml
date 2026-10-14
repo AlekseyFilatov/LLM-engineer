@@ -1,0 +1,55 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: triton-server-deployment
+  labels:
+    app: triton-server
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: triton-server
+  template:
+    metadata:
+      labels:
+        app: triton-server
+    spec:
+      containers:
+        - name: triton-server
+          image: "{{ .Values.image.tritonServer }}"
+          command: ["tritonserver"]
+          args:
+            - "--model-repository=/models"
+            - "--grpc-address=0.0.0.0"
+            - "--allow-grpc=true"
+            - "--backend-config=python,force-cpu-stub=true"
+          ports:
+            - containerPort: 8001
+              name: grpc-triton
+            - containerPort: 8002
+              name: metrics-triton
+          resources:
+            {{- toYaml .Values.triton.resources | nindent 12 }}
+          volumeMounts:
+            - name: model-repository
+              mountPath: /models
+      volumes:
+        - name: model-repository
+          persistentVolumeClaim:
+            claimName: s3-models-pvc # Подключаем S3-бакет с весами моделей как диск!
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: triton-service
+spec:
+  ports:
+    - port: 8001
+      targetPort: 8001
+      name: grpc
+    - port: 8002
+      targetPort: 8002
+      name: metrics
+  selector:
+    app: triton-server
+  type: ClusterIP

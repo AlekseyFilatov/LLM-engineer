@@ -1,0 +1,187 @@
+version: '3.8'
+
+services:
+  # =====================================================================
+  # 1. СЛОЙ ИНФЕРЕНСА: NVIDIA Triton Inference Server (С возвратом GPU)
+  # =====================================================================
+  triton-server:
+    image: nvcr.io/nvidia/tritonserver:25.12-py3
+    container_name: triton_server_omni
+    restart: unless-stopped
+    shm_size: 12gb
+    ports:
+      - "8000:8000"
+      - "8001:8001"
+      - "8002:8002"
+    volumes:
+      - ./src/triton_repository:/models
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              count: all
+              capabilities: [gpu]
+    command: >
+      tritonserver 
+      --model-repository=/models 
+      --grpc-address=0.0.0.0 
+      --http-address=0.0.0.0 
+      --allow-grpc=true 
+      --allow-http=true 
+      --backend-config=python,force-cpu-stub=true
+    networks:
+      - omni_network
+
+  # =====================================================================
+  # 2. СЛОЙ ПОИСКА: Qdrant Vector Database
+  # =====================================================================
+  qdrant-db:
+    image: qdrant/qdrant:latest
+    container_name: qdrant_db_omni
+    restart: unless-stopped
+    ports:
+      - "6333:6333"
+      - "6334:6334"
+    volumes:
+      - ./src/storage/qdrant_data:/qdrant/storage
+    networks:
+      - omni_network
+
+  # =====================================================================
+  # 3. СЛОЙ РАСПОЗНАВАНИЯ РЕЧИ: Faster-Whisper Сервер
+  # =====================================================================
+  whisper-asr:
+    image: fedirz/faster-whisper-server:latest-cpu
+    container_name: whisper_asr_omni
+    restart: unless-stopped
+    ports:
+      - "8003:8000"
+    environment:
+      - WHISPER_MODEL=tiny
+      - WHISPER_DEVICE=cpu
+      - WHISPER_COMPUTATION_TYPE=int8
+    volumes:
+      - ./src/storage/whisper_model_cache:/root/.cache/huggingface
+    networks:
+      - omni_network
+
+  # =====================================================================
+  # 4. СЛОЙ LLMOPS-МОНИТОРИНГА: Локальный Langfuse
+  # =====================================================================
+  langfuse-db:
+    image: postgres:16-alpine
+    container_name: langfuse_postgres
+    restart: unless-stopped
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=secret_password_here
+      - POSTGRES_DB=langfuse
+    volumes:
+      - ./src/storage/postgres_data:/var/lib/postgresql/data
+    networks:
+      - omni_network
+
+  langfuse-server:
+    image: langfuse/langfuse:2.92.0
+    container_name: langfuse_server_omni
+    restart: unless-stopped
+    depends_on:
+      - langfuse-db
+    ports:
+      - "3000:3000"
+    environment:
+      - DATABASE_URL=postgresql://postgres:secret_password_here@langfuse-db:5432/langfuse
+      - NEXTAUTH_SECRET=any_random_string_longer_than_thirty_two_characters
+      - SALT=any_random_salt_string
+      - LANGFUSE_INIT_PROJECT_NAME=Omni-Search-E-Commerce
+      - LANGFUSE_INIT_ORG_NAME=E-Corp-R-and-D
+      - TELEMETRY_ENABLED=false
+      - SIGNUP_DISABLED=false
+      - NEXTAUTH_URL=http://localhost:3000
+      - LANGFUSE_INIT_ADMIN_EMAIL=admin@example.com
+      - LANGFUSE_INIT_ADMIN_PASSWORD=my_very_secure_password_123
+    networks:
+      - omni_network
+
+  # =====================================================================
+  # 5. МЕТРИКИ: Сборщик временных рядов Prometheus
+  # =====================================================================
+  prometheus:
+    image: prom/prometheus:latest
+    container_name: prometheus_omni
+    restart: unless-stopped
+    volumes:
+      - ./config/prometheus.yml:/etc/prometheus/prometheus.yml
+      - prometheus_data:/prometheus
+    ports:
+      - "9090:9090"
+    networks:
+      - omni_network
+    depends_on:
+      - triton-server
+
+  # =====================================================================
+  # 6. ВИЗУАЛИЗАЦИЯ: Аналитическая панель Grafana
+  # =====================================================================
+  grafana:
+    image: grafana/grafana:latest
+    container_name: grafana_omni
+    restart: unless-stopped
+    ports:
+      - "3001:3000"
+    volumes:
+      - grafana_data:/var/lib/grafana
+    networks:
+      - omni_network
+    depends_on:
+      - prometheus
+
+  # =====================================================================
+  # 7. ФРОНТЕНД & ОРКЕСТРАТОР: Наш Python-контейнер Gradio UI (HTTP: 7860)
+  # =====================================================================
+  omni-agent-ui:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: omni_agent_ui_container
+    restart: unless-stopped
+    ports:
+      - "7860:7860"
+    env_file:
+      - .env
+    volumes:
+      # Монтируем картинки напрямую в рабочую директорию /app рантайма докера!
+      - ./data/catalog_images:/app/data/catalog_images
+    environment:
+      - TRITON_GRPC_URL=triton-server:8001
+      - QDRANT_HOST=qdrant-db
+      - WHISPER_URL=http://whisper-asr:8000
+    
+    # Даем контейнеру прямой доступ к CUDA-драйверам хоста!
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              count: all
+              capabilities: [gpu, utility, compute]
+              
+    depends_on:
+      - triton-server
+      - qdrant-db
+      - whisper-asr
+    networks:
+      - omni_network
+
+# =====================================================================
+# ОБЪЕМЫ И СЕТЕВАЯ ИНФРАСТРУКТУРА
+# =====================================================================
+volumes:
+  prometheus_data:
+  grafana_data:
+
+networks:
+  omni_network:
+    name: omni_search_network
+    driver: bridge
